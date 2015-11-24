@@ -190,7 +190,6 @@ dev_file=/dev/graphics/fb$fb_cnt
         chmod -h 0664 $file/vendor_name
         chmod -h 0664 $file/product_description
         chmod -h 0664 $file/video_mode
-        chmod -h 0664 $file/dyn_pu
         chmod -h 0664 $file/format_3d
         # create symbolic link
         ln -s $dev_file /dev/graphics/hdmi
