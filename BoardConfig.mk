@@ -51,7 +51,7 @@ TARGET_CPU_CORTEX_A53 := true
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 earlyprintk androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 earlyprintk androidboot.selinux=disabled
 BOARD_KERNEL_BASE := 0x80000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_TAGS_OFFSET := 0x00000100
@@ -107,8 +107,21 @@ COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DQCOM_BSP
 ADD_RADIO_FILES := true
 TARGET_RELEASETOOLS_EXTENSIONS := $(LOCAL_PATH)
 
+CM_CLASS := true
+#MOKEE_CLASS := true
+
 # Hardware
+ifneq ($(MOKEE_CLASS),true)
+BOARD_HARDWARE_CLASS := device/tcl/q39/mkhw
+endif
+
+ifneq ($(CM_CLASS),true)
 BOARD_HARDWARE_CLASS := device/tcl/q39/cmhw
+endif
+
+# Charger
+BOARD_CHARGER_DISABLE_INIT_BLANK := true
+BOARD_HAL_STATIC_LIBRARIES := libhealthd.msm8916
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT := true
@@ -127,6 +140,7 @@ TARGET_USES_C2D_COMPOSITION := true
 TARGET_USES_ION := true
 USE_OPENGL_RENDERER := true
 TARGET_LDPRELOAD := libNimsWrap.so
+BOARD_USES_OPENSSL_SYMBOLS := true
 
 #Enable HW based full disk encryption
 TARGET_HW_DISK_ENCRYPTION := true
@@ -142,8 +156,6 @@ BOARD_USES_QC_TIME_SERVICES := true
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
-AUDIO_FEATURE_ENABLED_FM := true
-AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
 
 # QCOM enhanced A/V
 TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
@@ -158,9 +170,6 @@ BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT     := true
 QCOM_BT_USE_SMD_TTY       := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
-
-# Logging
-TARGET_USES_LOGD=false
 
 # Malloc
 MALLOC_IMPL := dlmalloc
@@ -179,10 +188,8 @@ TARGET_NO_RPC := true
 # LightHAL
 TARGET_PROVIDES_LIBLIGHT := true
 
-# QCRIL
+# RIL
 TARGET_RIL_VARIANT := caf
-
-# Added to indicate that protobuf-c is supported in this build
 PROTOBUF_SUPPORTED := true
 
 # Flags
